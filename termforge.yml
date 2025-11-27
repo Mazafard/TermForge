@@ -25,4 +25,4 @@
       tags: ['k8s-tools']
     - role: iterm2
       tags: ['iterm2']
-      when: ansible_os_family == 'Darwin'
+      when: ansible_facts['os_family'] == 'Darwin'

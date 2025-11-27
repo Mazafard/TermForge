@@ -3,13 +3,13 @@
     name: zsh
     state: latest
   become: true
-  when: ansible_os_family != 'Darwin'
+  when: ansible_facts['os_family'] != 'Darwin'
 
 - name: Install zsh on macOS
   community.general.homebrew:
     name: zsh
     state: latest
-  when: ansible_os_family == 'Darwin'
+  when: ansible_facts['os_family'] == 'Darwin'
 
 - name: Resolve zsh binary path
   ansible.builtin.command: command -v zsh
@@ -22,7 +22,7 @@
     line: "{{ zsh_path_lookup.stdout }}"
     state: present
   become: true
-  when: ansible_os_family == 'Darwin'
+  when: ansible_facts['os_family'] == 'Darwin'
 
 - name: Switch default shell to zsh
   ansible.builtin.user:

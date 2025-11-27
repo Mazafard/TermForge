@@ -56,6 +56,11 @@ brew install ansible git
 Homebrew is also required so TermForge can install `zsh`, `tmux`, `node`,
 `k9s`, `kubectx`, `kubens`, and iTerm2.
 
+> **Heads-up:** On Apple Silicon you might see an interpreter-discovery warning
+> similar to `/opt/homebrew/bin/python3.14`. This is harmless, but you can silence
+> it by exporting `ANSIBLE_PYTHON_INTERPRETER=/opt/homebrew/bin/python3` (or by
+> setting `ansible_python_interpreter` in `hosts`).
+
 ## Install
 
 ```

@@ -3,13 +3,13 @@
     name: tmux
     state: latest
   become: true
-  when: ansible_os_family != 'Darwin'
+  when: ansible_facts['os_family'] != 'Darwin'
 
 - name: Install tmux on macOS
   community.general.homebrew:
     name: tmux
     state: latest
-  when: ansible_os_family == 'Darwin'
+  when: ansible_facts['os_family'] == 'Darwin'
 
 - name: Install Powerline Blue theme
   ansible.builtin.get_url:

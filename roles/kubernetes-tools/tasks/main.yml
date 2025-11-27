@@ -13,19 +13,18 @@
     name:
       - k9s
       - kubectx
-      - kubens
     state: latest
   when:
     - install_k8s_helpers
-    - ansible_os_family == 'Darwin'
+    - ansible_facts['os_family'] == 'Darwin'
 
 - name: Map architecture for Kubernetes binaries
   ansible.builtin.set_fact:
     kubetools_arch: >-
-      {% if ansible_architecture in ['x86_64', 'amd64'] %}amd64{% elif ansible_architecture in ['aarch64', 'arm64'] %}arm64{% else %}unsupported{% endif %}
+      {% if ansible_facts['architecture'] in ['x86_64', 'amd64'] %}amd64{% elif ansible_facts['architecture'] in ['aarch64', 'arm64'] %}arm64{% else %}unsupported{% endif %}
   when:
     - install_k8s_helpers
-    - ansible_os_family != 'Darwin'
+    - ansible_facts['os_family'] != 'Darwin'
 
 - name: Ensure architecture is supported
   ansible.builtin.assert:
@@ -34,7 +33,7 @@
     fail_msg: "Kubernetes helper installation currently supports x86_64/ARM64 only."
   when:
     - install_k8s_helpers
-    - ansible_os_family != 'Darwin'
+    - ansible_facts['os_family'] != 'Darwin'
 
 - name: Download k9s archive
   ansible.builtin.get_url:
@@ -43,7 +42,7 @@
     mode: '0644'
   when:
     - install_k8s_helpers
-    - ansible_os_family != 'Darwin'
+    - ansible_facts['os_family'] != 'Darwin'
 
 - name: Extract k9s binary
   ansible.builtin.unarchive:
@@ -53,7 +52,7 @@
     mode: '0755'
   when:
     - install_k8s_helpers
-    - ansible_os_family != 'Darwin'
+    - ansible_facts['os_family'] != 'Darwin'
 
 - name: Install k9s binary on Linux
   ansible.builtin.copy:
@@ -64,7 +63,7 @@
   become: true
   when:
     - install_k8s_helpers
-    - ansible_os_family != 'Darwin'
+    - ansible_facts['os_family'] != 'Darwin'
 
 - name: Ensure kubectx repository is present
   ansible.builtin.git:
@@ -75,7 +74,7 @@
   become: true
   when:
     - install_k8s_helpers
-    - ansible_os_family != 'Darwin'
+    - ansible_facts['os_family'] != 'Darwin'
 
 - name: Symlink kubectx command
   ansible.builtin.file:
@@ -86,7 +85,7 @@
   become: true
   when:
     - install_k8s_helpers
-    - ansible_os_family != 'Darwin'
+    - ansible_facts['os_family'] != 'Darwin'
 
 - name: Symlink kubens command
   ansible.builtin.file:
@@ -97,4 +96,4 @@
   become: true
   when:
     - install_k8s_helpers
-    - ansible_os_family != 'Darwin'
+    - ansible_facts['os_family'] != 'Darwin'

@@ -6,13 +6,13 @@
   loop:
     - nodejs
     - npm
-  when: ansible_os_family != 'Darwin'
+  when: ansible_facts['os_family'] != 'Darwin'
 
 - name: Ensure Node.js is installed on macOS
   community.general.homebrew:
     name: node
     state: latest
-  when: ansible_os_family == 'Darwin'
+  when: ansible_facts['os_family'] == 'Darwin'
 
 - name: Install cspell globally on Linux
   community.general.npm:
@@ -20,14 +20,14 @@
     global: true
     state: latest
   become: true
-  when: ansible_os_family != 'Darwin'
+  when: ansible_facts['os_family'] != 'Darwin'
 
 - name: Install cspell globally on macOS
   community.general.npm:
     name: cspell
     global: true
     state: latest
-  when: ansible_os_family == 'Darwin'
+  when: ansible_facts['os_family'] == 'Darwin'
 
 - name: Copy nvim cspell configuration
   ansible.builtin.copy:

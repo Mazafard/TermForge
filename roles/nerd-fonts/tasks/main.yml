@@ -3,13 +3,13 @@
     name: fontconfig
     state: latest
   become: true
-  when: ansible_os_family != 'Darwin'
+  when: ansible_facts['os_family'] != 'Darwin'
 
 - name: Install fontconfig on macOS
   community.general.homebrew:
     name: fontconfig
     state: latest
-  when: ansible_os_family == 'Darwin'
+  when: ansible_facts['os_family'] == 'Darwin'
 
 - name: Define font download URL
   ansible.builtin.set_fact:
@@ -17,7 +17,7 @@
 
 - name: Determine font install directory
   ansible.builtin.set_fact:
-    nerd_font_target_dir: "{{ (ansible_os_family == 'Darwin') | ternary(ansible_env.HOME + '/Library/Fonts/' + font_name, ansible_env.HOME + '/.local/share/fonts/' + font_name) }}"
+    nerd_font_target_dir: "{{ (ansible_facts['os_family'] == 'Darwin') | ternary(ansible_env.HOME + '/Library/Fonts/' + font_name, ansible_env.HOME + '/.local/share/fonts/' + font_name) }}"
 
 - name: Download the font archive
   ansible.builtin.get_url:
@@ -41,7 +41,7 @@
 - name: Update font cache
   ansible.builtin.command: fc-cache -fv
   delegate_to: localhost
-  when: ansible_os_family != 'Darwin'
+  when: ansible_facts['os_family'] != 'Darwin'
 
 - name: Remove the downloaded font archive
   ansible.builtin.file:

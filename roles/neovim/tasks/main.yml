@@ -6,7 +6,7 @@
   loop:
     - neovim
     - ripgrep
-  when: ansible_os_family != 'Darwin'
+  when: ansible_facts['os_family'] != 'Darwin'
 
 # Needed by telescope plugin for fuzzy greping
 - name: Install neovim dependencies on macOS
@@ -16,7 +16,7 @@
   loop:
     - neovim
     - ripgrep
-  when: ansible_os_family == 'Darwin'
+  when: ansible_facts['os_family'] == 'Darwin'
 
 - name: Check if nvim config already exist
   ansible.builtin.stat:
