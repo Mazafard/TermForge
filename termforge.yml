@@ -1,5 +1,18 @@
 - name: Set up local terminal environment
   hosts: local
+  vars_prompt:
+    - name: install_k8s_confirmation
+      prompt: "Do you want to install Kubernetes (Rancher Desktop)? [y/N]"
+      default: "N"
+      private: no
+    - name: install_rancher_server_confirmation
+      prompt: "Do you want to install Rancher Management Server on the cluster? [y/N]"
+      default: "N"
+      private: no
+
+  vars:
+    install_rancher_server: "{{ install_rancher_server_confirmation | lower | first == 'y' }}"
+
   roles:
     - role: zsh
       tags: ['zsh']
@@ -21,6 +34,9 @@
       tags: ['neovim']
     - role: cspell
       tags: ['cspell']
+    - role: rancher-desktop
+      tags: ['rancher-desktop']
+      when: install_k8s_confirmation | lower | first == 'y'
     - role: kubernetes-tools
       tags: ['k8s-tools']
     - role: iterm2

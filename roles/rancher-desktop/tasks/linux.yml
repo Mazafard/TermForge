@@ -1,0 +1,43 @@
+---
+- name: Add Rancher Desktop GPG key
+  ansible.builtin.get_url:
+    url: https://download.opensuse.org/repositories/isv:/Rancher:/dev/deb/Release.key
+    dest: /tmp/rancher-desktop.key
+    mode: '0644'
+  become: true
+
+- name: Dearmor Rancher Desktop GPG key
+  ansible.builtin.shell: |
+    cat /tmp/rancher-desktop.key | gpg --dearmor -o /usr/share/keyrings/isv-rancher-dev-archive-keyring.gpg
+  args:
+    creates: /usr/share/keyrings/isv-rancher-dev-archive-keyring.gpg
+  become: true
+
+- name: Add Rancher Desktop repository
+  ansible.builtin.apt_repository:
+    repo: "deb [signed-by=/usr/share/keyrings/isv-rancher-dev-archive-keyring.gpg] https://download.opensuse.org/repositories/isv:/Rancher:/dev/deb/ ./"
+    filename: isv-rancher-dev
+    state: present
+    update_cache: yes
+  become: true
+
+- name: Install Rancher Desktop
+  ansible.builtin.apt:
+    name: rancher-desktop
+    state: latest
+  become: true
+
+- name: Find rdctl binary
+  ansible.builtin.find:
+    paths: /opt/rancher-desktop
+    patterns: 'rdctl'
+    recurse: yes
+  register: rdctl_find
+
+- name: Symlink rdctl to /usr/local/bin
+  ansible.builtin.file:
+    src: "{{ rdctl_find.files[0].path }}"
+    dest: /usr/local/bin/rdctl
+    state: link
+  become: true
+  when: rdctl_find.matched > 0

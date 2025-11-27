@@ -1,0 +1,10 @@
+---
+- name: Install Rancher Desktop via Homebrew Cask
+  community.general.homebrew_cask:
+    name: rancher-desktop
+    state: present
+  when: ansible_facts['os_family'] == 'Darwin'
+
+# Note: The user provided build instructions for macOS involving nvm, yarn, and go.
+# However, for a terminal environment setup, installing the binary via Cask is preferred.
+# If manual build is required, additional tasks for nvm/yarn/go would be needed here.

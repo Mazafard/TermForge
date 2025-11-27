@@ -1,0 +1,39 @@
+---
+- name: Check if Helm is installed
+  ansible.builtin.command: which helm
+  register: helm_check
+  changed_when: false
+  failed_when: false
+
+- name: Install Helm on Linux
+  block:
+    - name: Download Helm signing key
+      ansible.builtin.get_url:
+        url: https://baltocdn.com/helm/signing.asc
+        dest: /usr/share/keyrings/helm.gpg
+        mode: '0644'
+      become: true
+
+    - name: Add Helm repository
+      ansible.builtin.apt_repository:
+        repo: "deb [arch={{ 'amd64' if ansible_architecture == 'x86_64' else 'arm64' }} signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main"
+        filename: helm-stable-debian
+        state: present
+      become: true
+
+    - name: Install Helm
+      ansible.builtin.apt:
+        name: helm
+        state: present
+      become: true
+  when:
+    - ansible_system == 'Linux'
+    - helm_check.rc != 0
+
+- name: Install Helm on macOS
+  community.general.homebrew:
+    name: helm
+    state: present
+  when:
+    - ansible_os_family == 'Darwin'
+    - helm_check.rc != 0
