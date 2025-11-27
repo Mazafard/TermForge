@@ -155,7 +155,7 @@ ansible-playbook -i hosts neovim-copilot.yml
 
 ![TermForge prompt](../media/termenv.png?raw=true)
 
-![TermForge tmux](../media/termenv-tmux.png?raw=true)
+![TermForge tmux](../media/nvim.png?raw=true)
 
 ## Testing the playbooks
 
