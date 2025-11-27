@@ -1,6 +1,22 @@
 - name: Install zsh-dircolors-solarized
   git: repo=https://github.com/joel-porquet/zsh-dircolors-solarized dest=~/.zsh/zsh-dircolors-solarized force=yes recursive=yes
 
+- name: Ensure dircolors is available on macOS
+  community.general.homebrew:
+    name: coreutils
+    state: present
+  when: ansible_facts['os_family'] == 'Darwin'
+
+- name: Ensure dircolors alias exists on macOS
+  ansible.builtin.blockinfile:
+    path: "{{ lookup('env', 'HOME') }}/.zshrc"
+    marker: "# {mark} ANSIBLE MANAGED dircolors alias"
+    block: |
+      if command -v gdircolors >/dev/null 2>&1; then
+        alias dircolors='gdircolors'
+      fi
+  when: ansible_facts['os_family'] == 'Darwin'
+
 - name: Add config to .zshrc
   lineinfile:
     path: "{{ lookup('env', 'HOME') }}/.zshrc"
