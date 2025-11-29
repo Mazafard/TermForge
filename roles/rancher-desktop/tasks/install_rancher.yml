@@ -6,6 +6,20 @@
   failed_when: false
   when: ansible_system == 'Linux'
 
+- name: Ensure Rancher Desktop is running (macOS)
+  ansible.builtin.command:
+    argv:
+      - "/Applications/Rancher Desktop.app/Contents/Resources/resources/darwin/bin/rdctl"
+      - "start"
+      - "--kubernetes.enabled=true"
+  changed_when: false
+  when: ansible_facts['os_family'] == 'Darwin'
+
+- name: Switch Kubernetes context to rancher-desktop
+  ansible.builtin.command: kubectl config use-context rancher-desktop
+  changed_when: false
+  ignore_errors: true
+
 # We need to wait for the cluster to be ready.
 - name: Wait for Kubernetes API to be available
   ansible.builtin.command: kubectl cluster-info
@@ -44,6 +58,17 @@
     create_namespace: false
     values:
       installCRDs: true
+      securityContext:
+        runAsNonRoot: false
+      webhook:
+        securityContext:
+          runAsNonRoot: false
+      cainjector:
+        securityContext:
+          runAsNonRoot: false
+      startupapicheck:
+        securityContext:
+          runAsNonRoot: false
   register: cert_manager_install
 
 - name: Wait for cert-manager to be ready
