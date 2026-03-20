@@ -211,3 +211,6 @@ vagrant destroy fedora
 
 Provisioning fails fast if the Ansible run fails, so verify the resulting
 environment manually after the VM boots.
+
+## 🌎 Visitors
+[![Visits Badge](https://badges.pufler.dev/visits/mazafard/TermForge)](https://badges.pufler.dev/mazafard/TermForge)
